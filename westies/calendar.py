@@ -18,7 +18,6 @@ import pytz
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
 
-
 @dataclass
 class Person:
     email: str
@@ -86,8 +85,7 @@ class Event:
         )
 
 
-
-class WestiesCalendar(object):
+class WestiesCalendar:
 
     def __init__(self, max_results: int = 100, timezone: str = 'Europe/Brussels'):
         self.creds = self.get_creds()
@@ -121,7 +119,6 @@ class WestiesCalendar(object):
     def get_start_and_end_time(self, start_date: datetime.datetime, end_date: datetime.datetime) -> (str, str):
         return start_date, end_date
 
-
     def get_calendar_events(self, start_time: datetime.datetime, end_time: datetime.datetime) -> list[dict]:
         events = []
         try:
@@ -152,6 +149,7 @@ class WestiesCalendar(object):
 
 if __name__ == '__main__':
     calendar = WestiesCalendar()
-    events = calendar.get_calendar_events(datetime.datetime(month=1, day=20, year=2023, minute=12, second=10), datetime.datetime(month=3, day=1, year=2023, minute=10, second= 10))
+    events = calendar.get_calendar_events(datetime.datetime(month=1, day=20, year=2023, minute=12, second=10),
+                                          datetime.datetime(month=3, day=1, year=2023, minute=10, second=10))
     for event in events:
         print(event)

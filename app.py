@@ -20,7 +20,6 @@ class TwitterSession:
 
 
 global twitter_session
-twitter_session = None
 
 
 @app.route('/twitter_redirect', methods=['GET', 'POST'])
@@ -42,6 +41,10 @@ def twitter_login_handler():
 def twitter_login():
     twitter_api.login_to_twitter()
     return "Logging into twitter..."
+
+@app.route('/', methods=['GET'])
+def dummy():
+    return "Hello World!"
 
 
 if __name__ == '__main__':

@@ -1,0 +1,16 @@
+---
+name: My Tweetbot
+owner:
+  email: gregrice@gmail.com
+google_account:
+  email: gregrice@gmail.com
+  credentials_file: "~/.credentials/google/credentials.json"
+  scopes:
+    - https://www.googleapis.com/auth/calendar.readonly
+twitter_account:
+  handle: GrittyKittyDMT
+  credentials_file: "~/.credentials/twitter/credentials.json"
+  scopes:
+    - tweet.write
+  api_key: "cfZr5poaRrEiS3039bMzP4B4A"
+  api_key_secret: "mzJb36cEpmeFkpjNFARD5QxfvhdJS7j2pFhmRdihBsiYGUSrxk"

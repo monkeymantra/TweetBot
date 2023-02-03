@@ -1,27 +1,27 @@
-from __future__ import print_function
 
 import datetime
 import os.path
+from typing import Type
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 import traceback
 from dataclasses import dataclass
-import dateutil.parser
+from modules import TweetBotConfig
 from functools import partial
 import pytz
 
+global parsed_with_tz
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
 
 @dataclass
 class Person:
-    email: str
-    displayName: str
+    email: Type[str]
+    displayName: Type[str]
     self: bool
 
     @staticmethod
@@ -35,45 +35,40 @@ class Person:
 
 @dataclass
 class Event:
-    kind: str
-    id: str
-    created: str
-    summary: str
+    kind: Type[str]
+    id: Type[str]
+    created: Type[str]
+    summary: Type[str]
     creator: Person
     organizer: Person
     originalStartTime: datetime.datetime
     start: datetime.datetime
     end: datetime.datetime
     updated: datetime.datetime
-    eventType: str
-    htmlLink: str
+    eventType: Type[str]
+    htmlLink: Type[str]
 
     @staticmethod
     def _parse_date(field_name=None, event_dict={}) -> datetime.datetime:
-        time_field = event_dict.get(field_name)
+        time_field: dict = event_dict.get(field_name)
+        print(time_field.items())
         tz = None
         if 'date' in time_field:
-            time_str = time_field.get('date')
+            time:  str = time_field['date']
         elif 'dateTime' in time_field:
-            time_str = time_field['dateTime']
+            time: str = time_field['time']
             tz = pytz.timezone(time_field['timeZone'])
-        else:
-            time_str = time_field
-        try:
-            parsed = dateutil.parser.parse(time_str)
-            parsed_with_tz = parsed.replace(tzinfo=tz)
-        except Exception as e:
-            traceback.print_exception(e)
-        return parsed_with_tz
+        return time_field
 
     @staticmethod
-    def from_event_dict(event_dict: dict) -> 'Event':
+    def from_event_dict(event_dict: dict):
+        event = event_dict['event']
         parse_date = partial(Event._parse_date, event_dict=event_dict)
         return Event(
             kind=event_dict['kind'],
-            start=parse_date('start'),
+            start=parse_date(event_dict['start']),
             end=parse_date('end'),
-            created=parse_date('created'),
+            created=parse_date(event_dict['created']),
             updated=parse_date('updated'),
             htmlLink=event_dict.get('htmlLink'),
             id=event_dict.get('id'),
@@ -87,11 +82,12 @@ class Event:
 
 class WestiesCalendar:
 
-    def __init__(self, max_results: int = 100, timezone: str = 'Europe/Brussels'):
+    def __init__(self, config: TweetBotConfig, max_results: int = 100, timezone: Type[str] = 'Europe/Brussels'):
         self.creds = self.get_creds()
         self.token = None
         self.max_results = max_results
         self.time_zone = pytz.timezone(timezone)
+        self.config = config
 
     def get_creds(self) -> Credentials:
         """Shows basic usage of the Google Calendar API.
@@ -108,7 +104,7 @@ class WestiesCalendar:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_sxecrets_file(
+                flow = InstalledAppFlow.from_client_secrets_file(
                     'credentials.json', SCOPES)
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
@@ -116,7 +112,7 @@ class WestiesCalendar:
                 token.write(creds.to_json())
         return creds
 
-    def get_start_and_end_time(self, start_date: datetime.datetime, end_date: datetime.datetime) -> (str, str):
+    def get_start_and_end_time(self, start_date: datetime.datetime, end_date: datetime.datetime) -> (Type[str], Type[str]):
         return start_date, end_date
 
     def get_calendar_events(self, start_time: datetime.datetime, end_time: datetime.datetime) -> list[dict]:
@@ -129,14 +125,12 @@ class WestiesCalendar:
             print(f'Getting the upcoming {self.max_results} events')
             events_result = service.events().list(calendarId='primary', timeMin=now,
                                                   maxResults=self.max_results, singleEvents=True,
-                                                  orderBy='startTime').execute()
-            events = [Event.from_event_dict(event_dict) for event_dict in events_result.get('items')]
-
+                                                  orderBye=-2,)
             if not events:
                 print('No upcoming events found.')
 
             # Prints the start and name of the next 10 events
-            return events
+            return events_result
 
         except Exception as e:
             traceback.print_exception(e)

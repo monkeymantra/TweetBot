@@ -45,5 +45,5 @@ def twitter_login():
 
 
 if __name__ == '__main__':
-    context = ('/etc/ssl/localhost/localhost.crt', '/etc/ssl/localhost/localhost.key')#certificate and key files
+    context = ('/home/ec2-user/cert.pem', '/home/ec2-user/key.pem')#certificate and key files
     app.run(debug=True, ssl_context=context, host="0.0.0.0", port=8001)

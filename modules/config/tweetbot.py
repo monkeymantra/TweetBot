@@ -18,6 +18,7 @@ class TwitterCredentials:
         self._creds_dict = self.parse_creds()
         self._api_key: str = None
         self._api_key_secret: str = None
+        self._bearer_token: str = None
 
     def parse_creds(self) -> dict:
         if not self._creds_dict:
@@ -39,6 +40,12 @@ class TwitterCredentials:
         if not self._api_key_secret:
             self._api_key_secret = self.credentials.get("api_key_secret")
         return self._api_key_secret
+
+    @property
+    def bearer_token(self) -> str:
+        if not self._bearer_token:
+            self._bearer_token = self.credentials.get("bearer_token")
+        return self._bearer_token
 
 
 @dataclass

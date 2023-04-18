@@ -1,7 +1,7 @@
 from logging import getLogger
 from flask import Flask, request
 
-from modules.config.tweetbot import TweetBotConfig
+from modules.config.credentials import TweetBotConfig
 from modules.twitter.client import TwitterApi
 from typed_dataclass import typed_dataclass
 

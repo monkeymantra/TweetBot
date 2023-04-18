@@ -1,7 +1,7 @@
 import tweepy
 import logging
 
-from modules.config.tweetbot import TweetBotConfig
+from modules.config.credentials import TweetBotConfig
 
 import logging
 from tweepy import API, Client

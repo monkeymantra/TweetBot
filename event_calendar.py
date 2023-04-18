@@ -9,7 +9,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import traceback
 from dataclasses import dataclass
-from modules.config.tweetbot import TweetBotConfig
+from modules.config.credentials import TweetBotConfig
 from functools import partial
 import pytz
 
@@ -80,7 +80,7 @@ class Event:
         )
 
 
-class WestiesCalendar:
+class Calendar:
 
     def __init__(self, max_results: int = 100, timezone: Type[str] = 'Europe/Brussels'):
         self.creds = self.get_creds()
@@ -141,7 +141,7 @@ class WestiesCalendar:
 
 
 if __name__ == '__main__':
-    calendar = WestiesCalendar()
+    calendar = Calendar()
     events = calendar.get_calendar_events(datetime.datetime(month=1, day=20, year=2023, minute=12, second=10),
                                           datetime.datetime(month=3, day=1, year=2023, minute=10, second=10))
     for event in events:

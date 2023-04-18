@@ -13,3 +13,4 @@ flask==2.2.2
 tweepy==4.12.1
 pyyaml==6.0
 python-dotenv
+python-configuration

@@ -9,7 +9,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import traceback
 from dataclasses import dataclass
-from modules import TweetBotConfig
+from modules.config.tweetbot import TweetBotConfig
 from functools import partial
 import pytz
 
@@ -82,12 +82,11 @@ class Event:
 
 class WestiesCalendar:
 
-    def __init__(self, config: TweetBotConfig, max_results: int = 100, timezone: Type[str] = 'Europe/Brussels'):
+    def __init__(self, max_results: int = 100, timezone: Type[str] = 'Europe/Brussels'):
         self.creds = self.get_creds()
         self.token = None
         self.max_results = max_results
         self.time_zone = pytz.timezone(timezone)
-        self.config = config
 
     def get_creds(self) -> Credentials:
         """Shows basic usage of the Google Calendar API.

@@ -7,7 +7,7 @@ from typed_dataclass import typed_dataclass
 
 logger = getLogger("TweetBot HTTP Server initializing...")
 config = TweetBotConfig.configFromYaml("./sample_config/config.yaml")
-twitter_api = TwitterApi(config)
+twitter_api: TwitterApi = TwitterApi(config)
 app = Flask(__name__)
 
 
@@ -41,6 +41,14 @@ def twitter_login_handler():
 def twitter_login():
     twitter_api.login_to_twitter()
     return "Logging into twitter..."
+
+@app.route('/twitter_followers', methods=['GET'])
+def twitter_followers():
+    return twitter_api.get_followers()
+
+@app.route('/me', methods=['GET'])
+def me():
+    return twitter_api.get_me()
 
 @app.route('/', methods=['GET'])
 def dummy():
